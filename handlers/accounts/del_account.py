@@ -4,7 +4,7 @@ from utils.misc import rate_limit
 from aiogram.dispatcher.filters import Command
 from aiogram.dispatcher import FSMContext
 from states import AccountStates
-from utils.db_api.commands import list_accounts
+from utils.db_api.commands import list_accounts, find_account_shortcuts
 from keyboards import back_kb
 from aiogram.types.reply_keyboard import ReplyKeyboardRemove
 
@@ -32,6 +32,9 @@ async def adding_account(message: types.Message, state: FSMContext):
         await message.answer("У вас нет счета с таким названием.", reply_markup=ReplyKeyboardRemove())
     else:
         await found.delete()
+        shorts = await find_account_shortcuts(found.id)
+        for s in shorts:
+            await s.delete()
         await message.answer("Счет был успешно удален.", reply_markup=ReplyKeyboardRemove())
     await state.finish()
 

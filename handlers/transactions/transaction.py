@@ -18,7 +18,7 @@ from aiogram.dispatcher import FSMContext
 @rate_limit(limit=1)
 @dp.message_handler()
 async def add_transaction(message: types.Message, state: FSMContext):
-    # поскольку этот хэндлер ловит все сообщения, проверим является ли это сообщение реплаем и если является проверим на удаление транзакции
+    # поскольку этот хэндлер ловит все сообщения, проверим является ли это сообщение реплаем и если является, проверим на удаление транзакции
     if message.reply_to_message:
         if message.text == "удали":
             try:
@@ -83,5 +83,5 @@ async def add_transaction(message: types.Message, state: FSMContext):
     await update_account(acc_id, amount, cat.is_income)
     await add_trans(message.from_user.id, cat.is_income, cat_id, amount, text, acc_id, message.message_id)
     acc = await select_account(acc_id)
-    await message.answer(f'Записал в <b>{"Доходы" if cat.is_income else "Расходы"}->{cat.name}. Сумма {amount} c {acc.name}</b>.\n'
+    await message.answer(f'Записал в <b>{"Доходы" if cat.is_income else "Расходы"}->{cat.name}. Сумма {amount} {"на" if cat.is_income else "с"} {acc.name}</b>.\n'
                          f'Примечание: {text}')
